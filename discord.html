@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cyber Chat & Call</title>
+    <title>Cyber Chat & Call 2.0</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.pubnub.com/sdk/javascript/pubnub.7.2.2.min.js"></script>
     <style>
@@ -169,6 +169,20 @@
             gap: 20px;
         }
 
+        /* Tag do Sistema Atualizado 2.0 */
+        .version-tag {
+            background: linear-gradient(45deg, #00ffcc, #0077ff);
+            color: #0f1015;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-align: center;
+            padding: 6px;
+            border-radius: 6px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 10px rgba(0, 255, 204, 0.2);
+        }
+
         .profile-card {
             background: #23242c;
             padding: 20px;
@@ -243,7 +257,7 @@
                 <img src="https://api.dicebear.com/7.x/bottts/svg?seed=CyberAdmin" alt="Avatar">
                 <div class="message-content">
                     <div class="user-name">Sistema Cyber</div>
-                    Conectado ao servidor público global! Qualquer pessoa abrindo este link agora lerá e enviará mensagens juntas.
+                    Conectado ao servidor público global v2.0! Suas mensagens estão sincronizadas em tempo real.
                 </div>
             </div>
         </div>
@@ -257,6 +271,8 @@
     </div>
 
     <div class="sidebar-right">
+        <div class="version-tag">Sistema Atualizado 2.0</div>
+
         <h2>Seu Perfil</h2>
         <div class="profile-card">
             <img id="currentAvatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=User" alt="Sua Foto">
@@ -277,7 +293,6 @@
     </div>
 
     <script>
-        // Configuração de chaves de demonstração públicas do PubNub (funcionam direto)
         const pubnub = new PubNub({
             publishKey: 'pub-c-4614ff73-7db4-47bd-a685-618d6e7f867c',
             subscribeKey: 'sub-c-ee379c2a-b7dc-401d-9e6e-cb407ef90e0c',
@@ -290,17 +305,14 @@
         };
         currentUser.avatar = `https://api.dicebear.com/7.x/bottts/svg?seed=${currentUser.name}`;
 
-        // Inicializa interface com dados gerados
         document.getElementById('currentName').innerText = currentUser.name;
         document.getElementById('currentAvatar').src = currentUser.avatar;
         document.getElementById('inputName').value = currentUser.name;
 
-        // Se inscreve no canal de rede do servidor público
         pubnub.subscribe({
             channels: ['cyber-comunidade-chat']
         });
 
-        // Escuta o servidor para quando novas mensagens de outras pessoas chegarem
         pubnub.addListener({
             message: function(event) {
                 const data = event.message;
@@ -336,7 +348,6 @@
             document.getElementById('currentAvatar').src = currentUser.avatar;
         }
 
-        // Publica a mensagem enviando para o servidor central e repassando a todos online
         function sendMessage(event) {
             event.preventDefault();
             const input = document.getElementById('messageInput');
