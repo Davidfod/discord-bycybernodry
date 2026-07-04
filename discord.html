@@ -29,6 +29,7 @@
             display: flex;
             flex-direction: column;
             padding: 20px;
+            justify-content: space-between; /* Garante que a versão fique no rodapé da barra */
         }
 
         .sidebar-left h2 {
@@ -74,6 +75,14 @@
         .btn-call.active i {
             background: #00ffcc;
             color: #0f1015;
+        }
+
+        /* Texto da versão no canto inferior esquerdo */
+        .version-text {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.3);
+            letter-spacing: 0.5px;
+            font-weight: 500;
         }
 
         .chat-area {
@@ -169,20 +178,6 @@
             gap: 20px;
         }
 
-        /* Tag do Sistema Atualizado 2.0 */
-        .version-tag {
-            background: linear-gradient(45deg, #00ffcc, #0077ff);
-            color: #0f1015;
-            font-size: 0.8rem;
-            font-weight: bold;
-            text-align: center;
-            padding: 6px;
-            border-radius: 6px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            box-shadow: 0 4px 10px rgba(0, 255, 204, 0.2);
-        }
-
         .profile-card {
             background: #23242c;
             padding: 20px;
@@ -240,11 +235,15 @@
 <body>
 
     <div class="sidebar-left">
-        <h2>Canais de Voz</h2>
-        <button class="btn-call" id="callBtn" onclick="toggleCall()">
-            <i class="fa-solid fa-phone"></i>
-            <span>Call 1</span>
-        </button>
+        <div>
+            <h2>Canais de Voz</h2>
+            <button class="btn-call" id="callBtn" onclick="toggleCall()">
+                <i class="fa-solid fa-phone"></i>
+                <span>Call 1</span>
+            </button>
+        </div>
+        
+        <div class="version-text">Sistema Atualizado 2.0</div>
     </div>
 
     <div class="chat-area">
@@ -271,8 +270,6 @@
     </div>
 
     <div class="sidebar-right">
-        <div class="version-tag">Sistema Atualizado 2.0</div>
-
         <h2>Seu Perfil</h2>
         <div class="profile-card">
             <img id="currentAvatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=User" alt="Sua Foto">
@@ -333,7 +330,7 @@
             }
         });
 
-        function updateProfile() {
+        fn=function updateProfile() {
             const nameInput = document.getElementById('inputName').value.trim();
             const avatarInput = document.getElementById('inputAvatar').value.trim();
 
