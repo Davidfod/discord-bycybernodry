@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber Chat & Call</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #0f1015;
+            color: #ffffff;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Esquerda: Canais e Call */
+        .sidebar-left {
+            width: 280px;
+            background: #16171d;
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            justify-content: space-between;
+        }
+
+        .sidebar-left h2 {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            color: #00ffcc;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-call {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #23242c;
+            border: 2px solid transparent;
+            color: #ffffff;
+            padding: 12px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-call i {
+            background: #5865F2;
+            padding: 10px;
+            border-radius: 50%;
+            font-size: 1rem;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-call.active {
+            border-color: #00ffcc;
+            background: #1a2725;
+        }
+
+        .btn-call.active i {
+            background: #00ffcc;
+            color: #0f1015;
+        }
+
+        /* Lista de quem está na Call */
+        .call-users-list {
+            margin-top: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding-left: 10px;
+        }
+
+        .user-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+            color: #b9bbbe;
+        }
+
+        .user-row img {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid #00ffcc;
+        }
+
+        /* Área Central: Chat */
+        .chat-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #1a1c23;
+        }
+
+        .chat-header {
+            padding: 20px;
+            background: #16171d;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-weight: bold;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            display: flex;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.02);
+            padding: 12px;
+            border-radius: 8px;
+            width: fit-content;
+            max-width: 80%;
+        }
+
+        .message img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .message-content {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message .user-name {
+            font-size: 0.9rem;
+            color: #00ffcc;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .chat-input-container {
+            padding: 20px;
+            background: #16171d;
+        }
+
+        .chat-input-form {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input {
+            flex: 1;
+            background: #23242c;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 14px;
+            border-radius: 8px;
+            color: #ffffff;
+            outline: none;
+            font-size: 1rem;
+        }
+
+        .btn-send {
+            background: #0077ff;
+            color: white;
+            border: none;
+            padding: 0 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+        }
+
+        /* Direita: Perfil e Configurações */
+        .sidebar-right {
+            width: 280px;
+            background: #16171d;
+            border-left: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .profile-card {
+            background: #23242c;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .profile-card img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 10px;
+            border: 2px solid #0077ff;
+        }
+
+        .profile-card h3 {
+            font-size: 1.1rem;
+            color: #ffffff;
+        }
+
+        .edit-profile-box {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .edit-profile-box label {
+            font-size: 0.85rem;
+            color: #b9bbbe;
+            text-transform: uppercase;
+        }
+
+        .edit-profile-box input {
+            background: #23242c;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 6px;
+            color: #ffffff;
+            outline: none;
+        }
+
+        .btn-save {
+            background: #00ffcc;
+            color: #0f1015;
+            border: none;
+            padding: 10px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-save:hover {
+            background: #00ccaa;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar-left">
+        <div>
+            <h2>Canais de Voz</h2>
+            <button class="btn-call" id="callBtn" onclick="toggleCall()">
+                <i class="fa-solid fa-phone"></i>
+                <span>Call 1</span>
+            </button>
+            
+            <div class="call-users-list" id="callUsersList">
+                </div>
+        </div>
+    </div>
+
+    <div class="chat-area">
+        <div class="chat-header">
+            <i class="fa-solid fa-hashtag"></i> chat-geral
+        </div>
+
+        <div class="chat-messages" id="chatMessages">
+            <div class="message">
+                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=CyberAdmin" alt="Avatar">
+                <div class="message-content">
+                    <div class="user-name">Sistema Cyber</div>
+                    Bem-vindo! Altere seu nome e foto no painel ao lado para testar.
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-input-container">
+            <form class="chat-input-form" onsubmit="sendMessage(event)">
+                <input type="text" id="messageInput" class="chat-input" placeholder="Conversar em #chat-geral" autocomplete="off">
+                <button type="submit" class="btn-send"><i class="fa-solid fa-paper-plane"></i></button>
+            </form>
+        </div>
+    </div>
+
+    <div class="sidebar-right">
+        <h2>Seu Perfil</h2>
+        
+        <div class="profile-card">
+            <img id="currentAvatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=CyberNoDry" alt="Sua Foto">
+            <h3 id="currentName">CyberNoDry_ofc</h3>
+        </div>
+
+        <div class="edit-profile-box">
+            <div>
+                <label>Mudar Nome</label>
+                <input type="text" id="inputName" value="CyberNoDry_ofc">
+            </div>
+            <div>
+                <label>URL da Foto (Link)</label>
+                <input type="text" id="inputAvatar" placeholder="Cole o link de uma imagem">
+            </div>
+            <button class="btn-save" onclick="updateProfile()">Salvar Alterações</button>
+        </div>
+    </div>
+
+    <script>
+        // Dados globais do usuário atual
+        let currentUser = {
+            name: "CyberNoDry_ofc",
+            avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=CyberNoDry"
+        };
+
+        let inCall = false;
+
+        // Atualiza as informações de perfil na tela
+        function updateProfile() {
+            const nameInput = document.getElementById('inputName').value.trim();
+            const avatarInput = document.getElementById('inputAvatar').value.trim();
+
+            if (nameInput !== "") {
+                currentUser.name = nameInput;
+            }
+            
+            if (avatarInput !== "") {
+                currentUser.avatar = avatarInput;
+            } else {
+                // Se deixar vazio, gera um boneco padrão baseado no nome
+                currentUser.avatar = `https://api.dicebear.com/7.x/bottts/svg?seed=${currentUser.name}`;
+            }
+
+            // Atualiza os elementos visuais do card lateral
+            document.getElementById('currentName').innerText = currentUser.name;
+            document.getElementById('currentAvatar').src = currentUser.avatar;
+
+            // Se o usuário já estiver na call, atualiza a lista da call também
+            if (inCall) {
+                renderCallList();
+            }
+        }
+
+        // Envia mensagem usando as informações atuais do perfil
+        function sendMessage(event) {
+            event.preventDefault();
+            const input = document.getElementById('messageInput');
+            const text = input.value.trim();
+            
+            if (text !== '') {
+                const chatMessages = document.getElementById('chatMessages');
+                
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('message');
+                
+                messageDiv.innerHTML = `
+                    <img src="${currentUser.avatar}" alt="Avatar">
+                    <div class="message-content">
+                        <div class="user-name">${currentUser.name}</div>
+                        <div>${text}</div>
+                    </div>
+                `;
+                
+                chatMessages.appendChild(messageDiv);
+                input.value = '';
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+        }
+
+        // Controla a entrada/saída da Call e atualiza a lista de integrantes
+        async function toggleCall() {
+            const btn = document.getElementById('callBtn');
+            
+            if (!inCall) {
+                try {
+                    await navigator.mediaDevices.getUserMedia({ audio: true });
+                    inCall = true;
+                    btn.classList.add('active');
+                    btn.querySelector('span').innerText = 'Conectado';
+                    renderCallList();
+                } catch (err) {
+                    alert('Permissão do microfone negada ou indisponível.');
+                    console.error(err);
+                }
+            } else {
+                inCall = false;
+                btn.classList.remove('active');
+                btn.querySelector('span').innerText = 'Call 1';
+                renderCallList();
+            }
+        }
+
+        // Atualiza visualmente quem está na chamada
+        function renderCallList() {
+            const list = document.getElementById('callUsersList');
+            list.innerHTML = ''; // Limpa a lista anterior
+
+            if (inCall) {
+                const userRow = document.createElement('div');
+                userRow.classList.add('user-row');
+                userRow.innerHTML = `
+                    <img src="${currentUser.avatar}" alt="Avatar">
+                    <span>${currentUser.name}</span>
+                `;
+                list.appendChild(userRow);
+            }
+        }
+    </script>
+</body>
+</html>
